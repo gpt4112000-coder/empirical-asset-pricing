@@ -1,12 +1,10 @@
 # Empirical Asset Pricing Replication — Fama-French 3-Factor
 
-**For:** Research Associate Programme, ISB Centre for Analytical Finance — closes SAS/STATA/MATLAB gap with R-equivalent workflow.
-
 ## Description
 A replication of the Fama-French 3-factor model on an equal-weight NSE portfolio. The pipeline fetches (or synthetically generates) Kenneth French daily factors, merges them with portfolio returns, and estimates OLS and Newey-West HAC regressions to obtain factor loadings, alpha, and robust standard errors. Implementations are provided in both Python (statsmodels) and R (lm + sandwich/vcovHAC) to demonstrate cross-tool translation and correct inference for empirical asset pricing, including diagnostics and R² reporting.
 
 ## Why this project
-CAF wants statistical-package fluency beyond Python. STATA/MATLAB are proprietary; **R is a legitimate substitute** in academic finance (per `project_plan.md`). This replicates a first-year finance PhD exercise: CAPM / FF3 regression with correct inference.
+Academic finance often expects statistical-package fluency beyond Python. STATA/MATLAB are proprietary; **R is a legitimate substitute** in academic finance. This replicates a first-year finance PhD exercise: CAPM / FF3 regression with correct inference.
 
 ## Data
 - **Portfolio:** Equal-weight of same 8 NSE large-caps as flagship (`prices.csv`, 2020-2026). Daily equal-weight return per day.
@@ -39,7 +37,7 @@ R²_adj negative indicates factors add no explanatory power on synthetic data �
 Diagnostics: `results/ff3_diagnostics.png` (fitted vs actual scatter + residuals over time), and `results/ff3_ols.csv` / `ff3_neweywest.csv`.
 
 ## R vs Python parity
-Both produce same coefficients. R script is the “STATA-equivalent workflow implemented in R” referenced in `project_plan.md` — proves ability to translate logic across tools, which CAF interview will test (“could you redo this in STATA/MATLAB live?”).
+Both produce same coefficients. R script is the “STATA-equivalent workflow implemented in R” referenced in `project_plan.md` — proves ability to translate logic across tools and reproduce results in different statistical packages.
 
 ## Reproduce
 ```bash
