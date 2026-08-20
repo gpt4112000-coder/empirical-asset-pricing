@@ -2,6 +2,9 @@
 
 **For:** Research Associate Programme, ISB Centre for Analytical Finance — closes SAS/STATA/MATLAB gap with R-equivalent workflow.
 
+## Description
+A replication of the Fama-French 3-factor model on an equal-weight NSE portfolio. The pipeline fetches (or synthetically generates) Kenneth French daily factors, merges them with portfolio returns, and estimates OLS and Newey-West HAC regressions to obtain factor loadings, alpha, and robust standard errors. Implementations are provided in both Python (statsmodels) and R (lm + sandwich/vcovHAC) to demonstrate cross-tool translation and correct inference for empirical asset pricing, including diagnostics and R² reporting.
+
 ## Why this project
 CAF wants statistical-package fluency beyond Python. STATA/MATLAB are proprietary; **R is a legitimate substitute** in academic finance (per `project_plan.md`). This replicates a first-year finance PhD exercise: CAPM / FF3 regression with correct inference.
 
@@ -50,11 +53,6 @@ Rscript R/analysis.R             # same in R (requires sandwich, lmtest)
 - Daily frequency; monthly FF factors are more standard for asset pricing — daily chosen to match portfolio frequency.
 - Synthetic fallback has no true factor structure — rerun with live French CSV for publishable betas.
 - No multiple-testing correction; larger sample + more portfolios needed for publication.
-
-## Interview prep
-- Why Newey-West vs plain OLS SEs? (hetero + autocorr in return residuals; plain SEs understate variance)
-- What would data-snooping look like here? (testing many portfolios/windows until alpha significant)
-- How window choice affects event study alternative (narrow → less noise, wide → more contamination)
 
 ## Structure
 ```

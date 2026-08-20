@@ -15,7 +15,7 @@ import statsmodels.api as sm
 ROOT = Path(__file__).parent
 FF = ROOT / "data" / "ff3.csv"
 _cands = [
-    Path(__file__).parent.parent.parent / "app-0001-nk-securities-quant-researcher" / "project-backtested-strategy-engine" / "data" / "prices.csv",
+    Path(__file__).parent.parent.parent / "app-0001-nk-securities-quant-researcher" / "backtested-strategy-engine" / "data" / "prices.csv",
     Path(__file__).parent.parent.parent / "app-0001-nk-securities-quant-researcher" / "project" / "data" / "prices.csv",
 ]
 PRICES = next((p for p in _cands if p.exists()), _cands[0])

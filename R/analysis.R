@@ -10,10 +10,10 @@ library(lmtest)
 
 ROOT <- if (file.exists("data/ff3.csv")) "." else "."
 FF <- file.path(ROOT, "data/ff3.csv")
-PX <- "../app-0001-nk-securities-quant-researcher/project-backtested-strategy-engine/data/prices.csv"
+PX <- "../app-0001-nk-securities-quant-researcher/backtested-strategy-engine/data/prices.csv"
 # try two locations
 if (!file.exists(PX)) PX <- "../app-0001-nk-securities-quant-researcher/project/data/prices.csv"
-if (!file.exists(PX)) PX <- file.path(ROOT, "../app-0001-nk-securities-quant-researcher/project-backtested-strategy-engine/data/prices.csv")
+if (!file.exists(PX)) PX <- file.path(ROOT, "../app-0001-nk-securities-quant-researcher/backtested-strategy-engine/data/prices.csv")
 if (!file.exists(PX)) PX <- file.path(ROOT, "../app-0001-nk-securities-quant-researcher/project/data/prices.csv")
 if (!file.exists(PX)) {
   # fallback search
