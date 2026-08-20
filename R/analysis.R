@@ -75,3 +75,54 @@ plot(df$Date, resid(fit), type="l", col="grey30", lwd=0.5,
      main="Residuals over time", ylab="Residual", xlab="Date")
 dev.off()
 cat("[R] saved diagnostics\n")
+
+# --- Robustness checks, mirroring robustness.py ---
+
+# VIF via 1/(1-R^2) of each regressor on the other regressors -- avoids a
+# car::vif dependency (car pulls in a heavy dependency tree) while giving
+# the identical statistic.
+vif_manual <- function(X) {
+  vifs <- c()
+  for (col in colnames(X)) {
+    other <- setdiff(colnames(X), col)
+    r2 <- summary(lm(as.formula(paste(col, "~", paste(other, collapse="+"))), data=X))$r.squared
+    vifs[col] <- 1 / (1 - r2)
+  }
+  vifs
+}
+factor_cols <- df[, c("Mkt-RF", "SMB", "HML")]
+colnames(factor_cols) <- c("Mkt.RF", "SMB", "HML")  # backtick-safe names for formula use
+vif_result <- vif_manual(factor_cols)
+cat("\n=== VIF (factor multicollinearity) ===\n")
+print(vif_result)
+
+# Subperiod split: first half vs second half, same HAC(5) spec as full sample
+mid <- floor(nrow(df) / 2)
+first_half <- df[1:mid, ]
+second_half <- df[(mid+1):nrow(df), ]
+fit_first <- lm(excess ~ `Mkt-RF` + SMB + HML, data=first_half)
+fit_second <- lm(excess ~ `Mkt-RF` + SMB + HML, data=second_half)
+cat("\n=== Subperiod split: first half ===\n")
+print(coeftest(fit_first, vcov=vcovHAC(fit_first, lag=5, type="HC0")))
+cat("\n=== Subperiod split: second half ===\n")
+print(coeftest(fit_second, vcov=vcovHAC(fit_second, lag=5, type="HC0")))
+
+# Rolling 252-day betas
+window <- 252
+roll_rows <- list()
+if (nrow(df) > window) {
+  for (end in window:nrow(df)) {
+    seg <- df[(end - window + 1):end, ]
+    seg_fit <- tryCatch(lm(excess ~ `Mkt-RF` + SMB + HML, data=seg), error=function(e) NULL)
+    if (!is.null(seg_fit)) {
+      cf <- coef(seg_fit)
+      roll_rows[[length(roll_rows)+1]] <- data.frame(
+        Date=seg$Date[nrow(seg)], alpha=cf[1], beta_mkt=cf[2], beta_smb=cf[3], beta_hml=cf[4]
+      )
+    }
+  }
+  rolling_df <- do.call(rbind, roll_rows)
+  write.csv(rolling_df, "results/ff3_R_rolling_betas.csv", row.names=FALSE)
+  cat(sprintf("\n[R] wrote results/ff3_R_rolling_betas.csv (%d rolling windows)\n", nrow(rolling_df)))
+}
+cat("[R] robustness checks complete\n")
